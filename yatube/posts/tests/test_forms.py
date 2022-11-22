@@ -9,6 +9,7 @@ from posts.tests.constants import (
     PROFILE, POST_CREATE, USERNAME, SLUG, SMALL_GIF, TEMP_MEDIA_ROOT
 )
 
+
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostFormTests(TestCase):
     @classmethod
@@ -63,16 +64,6 @@ class PostFormTests(TestCase):
         self.assertEqual(post_create.author, self.user)
         self.assertEqual(post_create.group.pk, form_data['group'])
         self.assertEqual('posts/small.gif', form_data['image'])
-        #self.assertTrue(
-        #    Post.objects.filter(
-        #        author=PostFormTests.user,
-        #        text=form_data['text'],
-        #        group=form_data['group'],
-        #        image=form_data['image']
-        #    ).exists()
-        #) не знаю, как лучше... 
-        # меня стр.65 смущает, почему я не могу написать post_create.image
-        # вместо posts/small.gif......................
 
     def test_edit_post(self):
         """Редактирование записи создателем поста"""
@@ -106,7 +97,8 @@ class PostFormTests(TestCase):
             self.assertEqual(
                 PostFormTests.post.comments.count(), comment)
             self.assertRedirects(
-                response, f"/auth/login/?next={PostFormTests.URL_POST_COMMENT}")
+                response,
+                f"/auth/login/?next={PostFormTests.URL_POST_COMMENT}")
         response = self.authorized_client.post(
             PostFormTests.URL_POST_COMMENT, data=form_data, follow=True)
         self.assertEqual(
@@ -114,4 +106,3 @@ class PostFormTests(TestCase):
         self.assertRedirects(response, PostFormTests.URL_POST_DETAIL)
         added_comment = PostFormTests.post.comments.latest("id")
         self.assertEqual(added_comment.text, form_data["text"])
-

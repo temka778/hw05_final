@@ -97,6 +97,7 @@ def follow_index(request):
     context = {'page_obj': page_navigation(posts, request)}
     return render(request, 'posts/follow.html', context)
 
+
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
@@ -104,6 +105,7 @@ def profile_follow(request, username):
     if request.user != author and not is_follower.exists():
         Follow.objects.create(user=request.user, author=author)
     return redirect(reverse('posts:profile', args=[username]))
+
 
 @login_required
 def profile_unfollow(request, username):

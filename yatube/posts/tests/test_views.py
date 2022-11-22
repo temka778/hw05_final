@@ -16,6 +16,7 @@ from posts.tests.constants import (
     TEMP_MEDIA_ROOT
 )
 
+
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostsViewsTests(TestCase):
     @classmethod
