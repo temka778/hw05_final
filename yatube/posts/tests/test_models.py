@@ -32,7 +32,6 @@ class PostModelTest(TestCase):
         """verbose_name в полях совпадает с ожидаемым."""
         field_verboses = {
             'text': 'текст поста',
-            'pub_date': 'дата публикации',
             'author': 'Автор',
             'group': 'группа'
         }
