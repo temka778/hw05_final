@@ -1,0 +1,14 @@
+{% load user_filters %}
+{% csrf_token %}
+{% for i in form %} 
+  <div class="form-group row my-3">
+    <label>
+      {{ i.label }}
+      {% if i.field.required %}<span class="required text-danger">*</span>{% endif %}
+    </label>
+    {{ i|addclass:'form-control' }} 
+    {% if i.help_text %}
+      <small id="{{ i.id_for_label }}-help" class="form-text text-muted"> {{ i.help_text|safe }}</small>
+    {% endif %}
+  </div>
+{% endfor %}
