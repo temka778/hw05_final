@@ -247,7 +247,6 @@ class FollowTests(TestCase):
             user=self.user_follower, author=self.user_following,
         ).exists())
 
-
     def test_follow_page_follower(self):
         """Проверка, что посты появляются по подписке."""
         response = self.client_follower.get(reverse('posts:follow_index'))
