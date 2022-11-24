@@ -53,6 +53,8 @@ class Comment(CreatedModel):
     class Meta:
         ordering = ('-created', )
         default_related_name = 'comments'
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
     def __str__(self):
         return self.text[:15]
@@ -67,11 +69,13 @@ class Follow(models.Model):
     )
 
     class Meta:
-        constraints = [
+        verbose_name = 'Подписчик'
+        verbose_name_plural = 'Подписчики'
+        constraints = (
             models.UniqueConstraint(
-                fields=["author", "user"], name="unique_follower_following"
+                fields=("author", "user"), name="unique_follower_following"
             )
-        ]
+        )
 
     def __str__(self):
         return f"{self.user.username} подписан на {self.author.username}"

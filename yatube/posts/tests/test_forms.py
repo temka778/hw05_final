@@ -38,8 +38,6 @@ class PostFormTests(TestCase):
         cls.guest_client = Client()
         cls.URL_POST_COMMENT = reverse(
             "posts:add_comment", args=[cls.post.id])
-        cls.URL_POST_DETAIL = reverse(
-            "posts:post_detail", args=[cls.post.id])
 
     @classmethod
     def tearDownClass(cls):
@@ -81,28 +79,14 @@ class PostFormTests(TestCase):
         self.assertEqual(post_edit.text, form_data['text'])
         self.assertEqual(post_edit.group.pk, form_data['group'])
 
-    def test_comment_posts(self):
-        """Проверка невозможности коментить неавторизованному пользователю
-        и в случае таких попыток - редирект на страницу входа.
-        При создании комента авторизованным пользователем
-        - в БД появляется соответствующая запись + редирект на детали поста.
-        Содержимое поля "text" последней записи в таблице "Comment"
-        эквивалентен тексту созданного тестового коммента.
-        """
-        comment = PostFormTests.post.comments.count()
+    def test_successful_comment_added(self):
+        """ После успешной отправки, комментарий появляется
+        на странице поста. Содержимое сответствует введённому."""
         form_data = {"text": "Тестовый текст комментария"}
-        response = self.guest_client.post(
-            PostFormTests.URL_POST_COMMENT, data=form_data, follow=True)
-        if True:
-            self.assertEqual(
-                PostFormTests.post.comments.count(), comment)
-            self.assertRedirects(
-                response,
-                f"/auth/login/?next={PostFormTests.URL_POST_COMMENT}")
-        response = self.authorized_client.post(
-            PostFormTests.URL_POST_COMMENT, data=form_data, follow=True)
-        self.assertEqual(
-            PostFormTests.post.comments.count(), comment + 1)
-        self.assertRedirects(response, PostFormTests.URL_POST_DETAIL)
-        added_comment = PostFormTests.post.comments.latest("id")
+        comment = self.post.comments.count()
+        self.authorized_client.post(
+            self.URL_POST_COMMENT, data=form_data, follow=True)
+        self.assertEqual(self.post.comments.count(), comment + 1)
+        added_comment = self.post.comments.latest("id")
         self.assertEqual(added_comment.text, form_data["text"])
+        # остальное убрал в test_views.py :)
