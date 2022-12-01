@@ -89,4 +89,3 @@ class PostFormTests(TestCase):
         self.assertEqual(self.post.comments.count(), comment + 1)
         added_comment = self.post.comments.latest("id")
         self.assertEqual(added_comment.text, form_data["text"])
-        # остальное убрал в test_views.py :)

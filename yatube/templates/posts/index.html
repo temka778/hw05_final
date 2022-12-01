@@ -3,7 +3,7 @@
 {% block content %}
 {% include 'posts/includes/switcher.html' %}
 {% load cache %}
-{% cache 20 index_page %}
+{% cache 20 index_page with page_obj %}
   <h1>Это главная страница проекта Yatube</h1>
   {% for post in page_obj %}
     {% include 'includes/for_loop.html' with alll_posts='True' not_a_profile='True' %}

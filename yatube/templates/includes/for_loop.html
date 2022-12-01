@@ -8,7 +8,7 @@
 {% thumbnail post.image "400x400" upscale=True as im %}
   <img width="30%" src="{{ im.url }}">
 {% endthumbnail %}
-<p>{{ post }}</p>
+<p>{{ post|linebreaksbr }}</p>
 <a href="{% url 'posts:post_detail' post.pk %}">подробная информация </a>
 <br>
 {% if post.group and alll_posts %}
