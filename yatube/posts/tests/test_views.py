@@ -243,8 +243,9 @@ class FollowTests(TestCase):
         self.client_following.get(reverse(
             'posts:profile_follow', kwargs={'username': self.user_following}
         ))
-        follow = Follow.objects.all().latest('id')
-        self.assertNotEqual(follow.user_id, self.user_following.id)
+        self.assertFalse(Follow.objects.filter(
+            user=self.user_following, author=self.user_following,
+        ).exists())
 
     def test_unfollow(self):
         """Зарегистрированный пользователь может отписаться."""

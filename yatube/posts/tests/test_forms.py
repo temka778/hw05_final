@@ -6,7 +6,7 @@ from django.urls import reverse
 from posts.forms import PostForm
 from posts.models import Post, Group, User
 from posts.tests.constants import (
-    PROFILE, POST_CREATE, USERNAME, SLUG, SMALL_GIF, TEMP_MEDIA_ROOT
+    POST_CREATE, USERNAME, SLUG, SMALL_GIF, TEMP_MEDIA_ROOT
 )
 
 
@@ -15,7 +15,7 @@ class PostFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        uploaded = SimpleUploadedFile(
+        cls.uploaded = SimpleUploadedFile(
             name='small.gif', content=SMALL_GIF, content_type='image/gif')
         cls.user = User.objects.create(username=USERNAME)
         cls.group = Group.objects.create(
@@ -30,7 +30,7 @@ class PostFormTests(TestCase):
             author=cls.user,
             text='Тестовый текст поста',
             group=cls.group,
-            image=uploaded)
+            image=cls.uploaded)
         cls.form = PostForm()
         cls.POST_EDIT = reverse("posts:post_edit", args=[cls.post.id])
         cls.authorized_client = Client()
@@ -46,22 +46,20 @@ class PostFormTests(TestCase):
 
     def test_create_post(self):
         """Валидная форма создает запись в Post."""
-        posts_count = Post.objects.count()
         form_data = {
             'text': self.post.text,
             'group': self.group.id,
-            'image': self.post.image
+            'image': self.uploaded
         }
         response = self.authorized_client.post(
             POST_CREATE, data=form_data, follow=True)
-        self.assertRedirects(response, PROFILE)
-        self.assertEqual(Post.objects.count(), posts_count + 1)
         post_create = Post.objects.latest('id')
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(post_create.text, form_data['text'])
         self.assertEqual(post_create.author, self.user)
         self.assertEqual(post_create.group.pk, form_data['group'])
-        self.assertEqual('posts/small.gif', form_data['image'])
+        data_image_name = 'posts/' + form_data['image'].name
+        self.assertEqual(post_create.image.name, data_image_name)
 
     def test_edit_post(self):
         """Редактирование записи создателем поста"""
